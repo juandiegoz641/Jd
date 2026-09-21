@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Día de la Primavera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at 20% 15%, #fff8ec 0%, #fdeef1 38%, #eef7ea 75%, #e3f2e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .floating-flower {
+    position: fixed;
+    top: -40px;
+    font-size: 24px;
+    animation: fall linear infinite;
+    opacity: 0.75;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.06));
+    z-index: 0;
+    pointer-events: none;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-40px) rotate(0deg); }
+    100% { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* ---------- SOBRE ---------- */
+  #envelopeScene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    perspective: 1200px;
+  }
+  .envelope {
+    position: relative;
+    width: 280px;
+    height: 186px;
+    cursor: pointer;
+    filter: drop-shadow(0 18px 28px rgba(120,70,50,0.18));
+  }
+  .env-body {
+    position: absolute;
+    inset: 0;
+    background: #fdfbf5;
+    border-radius: 3px;
+    border: 1.5px dashed #3a3a3a;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+  }
+  .env-body::after {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border-radius: 2px;
+  }
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    clip-path: polygon(0 0, 100% 0, 50% 60%);
+    background: #f7f4ea;
+    border-radius: 3px 3px 0 0;
+    transform-origin: top;
+    transition: transform 0.7s cubic-bezier(.68,-0.4,.27,1.4);
+    z-index: 3;
+  }
+  .env-flap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    clip-path: polygon(0 0, 100% 0, 50% 60%);
+    border: 1.5px dashed #3a3a3a;
+    box-sizing: border-box;
+  }
+  .envelope.open .env-flap {
+    transform: rotateX(180deg);
+  }
+  .env-letter {
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    transform: translateX(-50%);
+    width: 87%;
+    height: 68px;
+    background: #fffefb;
+    border: 1.5px dashed #3a3a3a;
+    border-radius: 2px;
+    z-index: 2;
+    transition: transform 0.6s ease 0.3s, height 0.6s ease 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: #4a4a4a;
+    text-align: center;
+    padding: 8px;
+  }
+  .envelope.open .env-letter {
+    transform: translate(-50%, -220px);
+    height: 210px;
+  }
+  .env-seal {
+    position: absolute;
+    top: 12px; right: 14px;
+    width: 30px;
+    height: 30px;
+    z-index: 4;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .envelope.open .env-seal { opacity: 0; transform: scale(0.6); }
+
+  .tap-hint {
+    margin-top: 20px;
+    color: #a98a6a;
+    font-size: 14px;
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+  }
+
+  /* ---------- CONTENIDO DE LA CARTA ---------- */
+  #letterContent {
+    display: none;
+    background: #fdfbf5;
+    border-radius: 3px;
+    padding: 36px 26px 30px;
+    text-align: center;
+    box-shadow: 0 20px 45px rgba(90,60,40,0.12);
+    border: 1.5px dashed #3a3a3a;
+    position: relative;
+  }
+  #letterContent.show { display: block; animation: fadein 0.7s ease; }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 34px;
+    color: #c25a76;
+    margin: 0 0 2px;
+  }
+  .subtitle {
+    color: #7a8f68;
+    font-size: 13px;
+    margin: 0 0 22px;
+    letter-spacing: 0.2px;
+  }
+
+  .garden {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background: linear-gradient(180deg, #fdeecb 0%, #f9d9a8 22%, #f0c48f 42%, #d9d98a 58%, #a9c96e 78%, #8ab857 100%);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border: 1px solid #d8c68f;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .garden-sun {
+    position: absolute;
+    top: 26px; left: 50%;
+    transform: translateX(-50%);
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff8e0 0%, #ffe6a8 60%, #ffd27a 100%);
+    box-shadow: 0 0 40px rgba(255,220,150,0.65);
+  }
+  .garden-mountain {
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    height: auto;
+  }
+  .garden-field {
+    position: absolute;
+    bottom: -10px;
+    left: -5%;
+    width: 110%;
+    height: 130px;
+    background: linear-gradient(180deg, #cfd97a 0%, #a9c96e 35%, #7fae4d 100%);
+    border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+  }
+  .garden-dot {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.85;
+  }
+  .hidden-flower {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    user-select: none;
+    will-change: left, top;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12));
+  }
+  .hidden-flower.found {
+    animation: pop 0.4s ease;
+    pointer-events: none;
+  }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.6); }
+    100% { transform: scale(1.3); }
+  }
+
+  .progress {
+    font-size: 13px;
+    color: #8a8a86;
+    margin-bottom: 18px;
+  }
+  .progress span { font-weight: 600; color: #c25a76; }
+
+  .message-box {
+    display: none;
+    background: #fffaf6;
+    border: 1px solid #f0d9e2;
+    border-left: 3px solid #e6a8bc;
+    border-radius: 6px;
+    padding: 24px 22px;
+    margin-top: 8px;
+    text-align: left;
+  }
+  .message-box.show { display: block; animation: fadein 0.6s ease; }
+
+  .message-box h2 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    color: #c25a76;
+    font-size: 24px;
+    margin: 0 0 10px;
+    text-align: center;
+  }
+  .message-box p {
+    font-family: 'Caveat', cursive;
+    color: #5c5449;
+    font-size: 19px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .edit-note {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  .hint {
+    font-size: 13px;
+    color: #9a9a94;
+    margin-top: 14px;
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <audio id="bgMusic" src="https://p.scdn.co/mp3-preview/803e36eac065ef2ba968688834412f80e8e90206.mp3" loop></audio>
+
+  <div id="envelopeScene">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+      <div class="env-body"></div>
+      <div class="env-letter">Para ti<br>toca para abrir</div>
+      <div class="env-flap"></div>
+      <svg class="env-seal" viewBox="0 0 30 30" fill="none" stroke="#4a7a5c" stroke-width="1.1">
+        <circle cx="15" cy="15" r="3"/>
+        <ellipse cx="15" cy="8" rx="2.6" ry="4"/>
+        <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(72 15 15)"/>
+        <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(144 15 15)"/>
+        <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(216 15 15)"/>
+        <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(288 15 15)"/>
+      </svg>
+    </div>
+    <p class="tap-hint">Tienes una carta esperándote...</p>
+  </div>
+
+  <div id="letterContent">
+    <svg style="position:absolute; top:14px; right:16px; width:24px; height:24px;" viewBox="0 0 30 30" fill="none" stroke="#c98aa8" stroke-width="1.1">
+      <circle cx="15" cy="15" r="3"/>
+      <ellipse cx="15" cy="8" rx="2.6" ry="4"/>
+      <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(72 15 15)"/>
+      <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(144 15 15)"/>
+      <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(216 15 15)"/>
+      <ellipse cx="15" cy="8" rx="2.6" ry="4" transform="rotate(288 15 15)"/>
+    </svg>
+    <h1>Feliz día de la primavera</h1>
+    <p class="subtitle">Aunque estés lejos, quería que sientas esto hoy 21 de septiembre</p>
+
+    <div class="garden" id="garden">
+      <div class="garden-sun"></div>
+      <svg class="garden-mountain" viewBox="0 0 480 140" preserveAspectRatio="none" style="bottom:70px;">
+        <polygon points="0,140 60,55 120,100 180,40 230,90 280,50 330,95 380,60 430,100 480,70 480,140" fill="#c9a98f" opacity="0.55"/>
+        <polygon points="0,140 90,80 160,110 210,65 260,105 320,75 400,110 480,90 480,140" fill="#b8896f" opacity="0.7"/>
+        <polygon points="180,40 200,58 190,58 210,72 165,72 185,58 175,58" fill="#fdf6ea" opacity="0.8"/>
+      </svg>
+      <div class="garden-field" id="gardenField"></div>
+    </div>
+
+    <div class="progress">Flores encontradas: <span id="count">0</span> / 21</div>
+
+    <div class="message-box" id="messageBox">
+      <h2>Lo lograste</h2>
+      <p>
+        Que este inicio de primavera te traiga tantas sonrisas como pétalos tienen estas flores. ¡Feliz día!
+        <br><br>
+        A pesar de la distancia sabes que tienes mi cariño y amistad, espero que esta carta te haya alegrado tu día.
+      </p>
+    </div>
+
+    <div class="hint" id="hint">Toca las flores escondidas en el jardín</div>
+  </div>
+
+</div>
+
+<script>
+  // Generador de flores en SVG estilo acuarela (paletas variadas)
+  const flowerPalettes = [
+    { petal: '#f6c6d6', petalDark: '#d97ba0', center: '#f2c14e', centerDark: '#c98a1f' }, // rosa pastel
+    { petal: '#fdfdfd', petalDark: '#c3d4e0', center: '#f2c14e', centerDark: '#c98a1f' }, // blanca
+    { petal: '#b9b3e8', petalDark: '#7466c4', center: '#6b5aa0', centerDark: '#3f3268' }, // lila
+    { petal: '#e8776f', petalDark: '#b73f36', center: '#f2c14e', centerDark: '#c98a1f' }, // coral
+    { petal: '#f7b84a', petalDark: '#c9760f', center: '#5c3a12', centerDark: '#3a230a' }, // girasol
+    { petal: '#a9c8ec', petalDark: '#5c8bc4', center: '#f2c14e', centerDark: '#c98a1f' }, // celeste
+    { petal: '#f2a3c9', petalDark: '#c9518e', center: '#ffe08a', centerDark: '#d9a53f' }, // fucsia
+    { petal: '#c9a3e0', petalDark: '#8f4bbf', center: '#6b5aa0', centerDark: '#3f3268' }  // morada
+  ];
+
+  function flowerSVG(seed) {
+    const p = flowerPalettes[seed % flowerPalettes.length];
+    const petals = 6;
+    let petalShapes = '';
+    for (let i = 0; i < petals; i++) {
+      const angle = (360 / petals) * i;
+      petalShapes += `<ellipse cx="20" cy="10" rx="6.5" ry="10" fill="url(#g${seed})" transform="rotate(${angle} 20 20)"/>`;
+    }
+    return `<svg viewBox="0 0 40 40" width="100%" height="100%">
+      <defs>
+        <radialGradient id="g${seed}" cx="35%" cy="30%" r="75%">
+          <stop offset="0%" stop-color="${p.petal}"/>
+          <stop offset="100%" stop-color="${p.petalDark}"/>
+        </radialGradient>
+      </defs>
+      ${petalShapes}
+      <circle cx="20" cy="20" r="5" fill="${p.center}"/>
+    </svg>`;
+  }
+
+  // Flores cayendo de fondo
+  for (let i = 0; i < 18; i++) {
+    const f = document.createElement('div');
+    f.className = 'floating-flower';
+    f.innerHTML = flowerSVG(Math.floor(Math.random() * flowerPalettes.length));
+    f.style.left = Math.random() * 100 + 'vw';
+    f.style.animationDuration = (6 + Math.random() * 6) + 's';
+    f.style.animationDelay = (Math.random() * 6) + 's';
+    const size = 16 + Math.random() * 16;
+    f.style.width = size + 'px';
+    f.style.height = size + 'px';
+    document.body.appendChild(f);
+  }
+
+  // Abrir sobre -> mostrar carta
+  function openEnvelope() {
+    const envelope = document.getElementById('envelope');
+    if (envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    const music = document.getElementById('bgMusic');
+    music.volume = 0.5;
+    music.play().catch(() => {});
+    setTimeout(() => {
+      document.getElementById('envelopeScene').style.display = 'none';
+      const content = document.getElementById('letterContent');
+      content.classList.add('show');
+      setupGarden();
+    }, 1000);
+  }
+
+  // Juego: flores que se mueven solas y huyen del cursor
+  function setupGarden() {
+    const garden = document.getElementById('garden');
+    const gardenField = document.getElementById('gardenField');
+    const countEl = document.getElementById('count');
+    const messageBox = document.getElementById('messageBox');
+    const hint = document.getElementById('hint');
+    let found = 0;
+    const total = 21;
+    const flowers = [];
+
+    // puntitos de flores decorativas fijas en el campo (estilo valle multicolor)
+    const dotColors = ['#e05c8a','#f2b134','#c86ce0','#f26d6d','#f7f0a8','#a24fc7'];
+    for (let i = 0; i < 60; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'garden-dot';
+      const size = 3 + Math.random() * 4;
+      dot.style.width = size + 'px';
+      dot.style.height = size + 'px';
+      dot.style.left = Math.random() * 100 + '%';
+      dot.style.top = (30 + Math.random() * 65) + '%';
+      dot.style.background = dotColors[Math.floor(Math.random() * dotColors.length)];
+      gardenField.appendChild(dot);
+    }
+
+    const gw = garden.clientWidth;
+    const gh = garden.clientHeight;
+    const fleeRadius = 90;
+    let speedMultiplier = 1;
+
+    for (let i = 0; i < total; i++) {
+      const el = document.createElement('div');
+      el.className = 'hidden-flower';
+      el.innerHTML = flowerSVG(i);
+      garden.appendChild(el);
+
+      const state = {
+        el: el,
+        x: 20 + Math.random() * (gw - 60),
+        y: 20 + Math.random() * (gh - 60),
+        vx: (Math.random() - 0.5) * 2.2,
+        vy: (Math.random() - 0.5) * 2.2,
+        found: false
+      };
+      flowers.push(state);
+
+      el.addEventListener('click', () => {
+        if (state.found) return;
+        state.found = true;
+        el.classList.add('found');
+        found++;
+        countEl.textContent = found;
+        speedMultiplier = Math.max(0.35, speedMultiplier - 0.03);
+        if (found === total) {
+          hint.textContent = '¡Encontraste todas! 🎉';
+          messageBox.classList.add('show');
+        } else {
+          hint.textContent = '¡Sigue así, cada vez es más fácil! 🌷';
+        }
+      });
+    }
+
+    garden.addEventListener('mousemove', (e) => {
+      const rect = garden.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      flowers.forEach(f => {
+        if (f.found) return;
+        const dx = (f.x + 15) - mx;
+        const dy = (f.y + 15) - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < fleeRadius) {
+          const force = (fleeRadius - dist) / fleeRadius;
+          f.vx += (dx / (dist || 1)) * force * 2.2 * speedMultiplier;
+          f.vy += (dy / (dist || 1)) * force * 2.2 * speedMultiplier;
+        }
+      });
+    });
+
+    function tick() {
+      const w = garden.clientWidth;
+      const h = garden.clientHeight;
+      flowers.forEach(f => {
+        if (f.found) return;
+        f.x += f.vx * speedMultiplier;
+        f.y += f.vy * speedMultiplier;
+        f.vx *= 0.995;
+        f.vy *= 0.995;
+        f.vx += (Math.random() - 0.5) * 0.3;
+        f.vy += (Math.random() - 0.5) * 0.3;
+        const minSpeed = 1 * speedMultiplier;
+        const maxSpeed = 3 * speedMultiplier;
+        const speed = Math.sqrt(f.vx * f.vx + f.vy * f.vy);
+        if (speed > maxSpeed) {
+          f.vx = (f.vx / speed) * maxSpeed;
+          f.vy = (f.vy / speed) * maxSpeed;
+        } else if (speed < minSpeed) {
+          const boost = minSpeed / (speed || 0.01);
+          f.vx *= boost;
+          f.vy *= boost;
+        }
+        if (f.x < 0) { f.x = 0; f.vx *= -1; }
+        if (f.x > w - 26) { f.x = w - 26; f.vx *= -1; }
+        if (f.y < 0) { f.y = 0; f.vy *= -1; }
+        if (f.y > h - 26) { f.y = h - 26; f.vy *= -1; }
+        f.el.style.left = f.x + 'px';
+        f.el.style.top = f.y + 'px';
+      });
+      requestAnimationFrame(tick);
+    }
+    tick();
+  }
+</script>
+
+</body>
+</html>
